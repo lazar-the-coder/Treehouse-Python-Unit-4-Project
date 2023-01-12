@@ -72,7 +72,7 @@ def add_item():
     while True:
         product_name = input('Enter product name: ')
         product_quantity = input('Enter product amount: ')
-        product_price = input('Enter product price in dollars (ex. $13.40): ')
+        product_price = input('Enter product price in dollars (ex. 13.40): ')
         product_date = datetime.date.today()
         try:
             item_adder([product_name, product_price, product_quantity, product_date])
@@ -96,7 +96,7 @@ def item_adder(item):
     if type(date_before) == datetime.date:
         clean_date = date_before
     else:
-        clean_date = datetime.datetime.strptime(date_before, "%m/%d/%Y")
+        clean_date = (datetime.datetime.strptime(date_before, "%m/%d/%Y")).date()
     new_item = Product(
         product_name=item_name,
         product_quantity=clean_quantity,
@@ -105,7 +105,7 @@ def item_adder(item):
         )
     if session.query(Product.product_name).filter_by(product_name=item_name).first():
         old_item = session.query(Product).filter_by(product_name=item_name).first()
-        if old_item.date_updated < clean_date.date():
+        if old_item.date_updated <= clean_date:
             old_item.product_quantity = clean_quantity
             old_item.product_price = clean_price
             old_item.date_updated = clean_date
@@ -122,9 +122,9 @@ def backup_inventory():
         for item in session.query(Product):
             writer.writerow({
                 'product_name': item.product_name,
-                'product_price': ('$' + str(item.product_price/100)),
+                'product_price': (f'${(item.product_price/100):.2f}'),
                 'product_quantity': item.product_quantity,
-                'date_updated': item.date_updated
+                'date_updated': (item.date_updated.strftime("%#m/%#d/%Y"))
                 })
     print('Inventory backed up successfully')
     cont = input('Press enter to continue')
