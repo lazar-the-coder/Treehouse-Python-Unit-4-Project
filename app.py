@@ -14,10 +14,14 @@ def main():
 
 def import_data():
     with open('inventory.csv', newline='') as csvfile:
-        productreader = csv.reader(csvfile, delimiter='|')
-        rows = list(productreader)
-        for row in rows[1:]:
-            item_adder(row[0].split(','))
+        productreader = csv.DictReader(csvfile)
+        for row in productreader:
+            item_adder([
+                row['product_name'],
+                row['product_price'],
+                row['product_quantity'],
+                row['date_updated']
+                ])
     session.commit()
 
 def choice_process():
@@ -63,7 +67,6 @@ def add_item():
         session.commit()
 
 def item_adder(item):
-    print(item)
     item_name, price_before, quantity_before, date_before = item[0:]
     clean_quantity = int(quantity_before)
     if price_before[0] == '$':
