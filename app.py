@@ -124,7 +124,7 @@ def backup_inventory():
                 'product_name': item.product_name,
                 'product_price': (f'${(item.product_price/100):.2f}'),
                 'product_quantity': item.product_quantity,
-                'date_updated': (item.date_updated.strftime("%#m/%#d/%Y"))
+                'date_updated': (item.date_updated.strftime("%m/%d/%Y"))
                 })
     print('Inventory backed up successfully')
     cont = input('Press enter to continue')
